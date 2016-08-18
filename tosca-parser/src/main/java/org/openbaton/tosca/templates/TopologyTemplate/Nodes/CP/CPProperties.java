@@ -1,14 +1,27 @@
 package org.openbaton.tosca.templates.TopologyTemplate.Nodes.CP;
 
+import java.util.Map;
+
 /**
  * Created by rvl on 17.08.16.
  */
 public class CPProperties {
 
-    private String type;
-    private Boolean anti_spoof_protection;
+    private String type = null;
+    //TODO: FIX
+    private boolean anti_spoof_protection = false;
 
-    public CPProperties(){}
+    public CPProperties(Object properties){
+        Map<String, Object> propertiesMap = (Map<String, Object>) properties;
+
+        if(propertiesMap.containsKey("type")){
+            this.type = (String) propertiesMap.get("type");
+        }
+
+        if(propertiesMap.containsKey("anti_spoof_protection")){
+            this.anti_spoof_protection = (Boolean) propertiesMap.get("anti_spoof_protection");
+        }
+    }
 
     public String getType() {
         return type;
@@ -18,11 +31,11 @@ public class CPProperties {
         this.type = type;
     }
 
-    public Boolean getAnti_spoof_protection() {
+    public boolean getAnti_spoof_protection() {
         return anti_spoof_protection;
     }
 
-    public void setAnti_spoof_protection(Boolean anti_spoof_protection) {
+    public void setAnti_spoof_protection(boolean anti_spoof_protection) {
         this.anti_spoof_protection = anti_spoof_protection;
     }
 
@@ -30,6 +43,6 @@ public class CPProperties {
     public String toString(){
         return "CP Properties: \n" +
                 "Type: " + type + "\n" +
-                "AntiSpoof: " + anti_spoof_protection.toString();
+                "AntiSpoof: " + anti_spoof_protection;
     }
 }

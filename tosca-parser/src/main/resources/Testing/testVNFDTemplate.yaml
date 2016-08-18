@@ -1,0 +1,58 @@
+tosca_definitions_version: tosca_simple_profile_for_nfv_1_0
+description: Simple Virtual Router with one VDU
+
+metadata:
+  ID: vRouter-1-0-0
+  vendor:  Acme
+  version: 1.0
+
+node_types:
+  vRouterVNF:
+  derived_from: tosca.nodes.nfv.VNF
+  capabilities:
+  forwarder_ingres:
+  type: tosca.capabilities.nfv.Forwarder
+  forwarder_egres:
+  type: tosca.capabilities.nfv.Forwarder
+
+topology_template:
+   inputs:
+   substitution_mappings:
+
+   node_templates:
+     VDU1:
+       type: tosca.nodes.nfv.VDU
+       capabilities:
+         nfv_compute:
+           properties:
+             mem_page_size: large
+       artifacts:
+        vRouterImage:
+           type: tosca.artifacts.Deployment.Image.VM
+           file: vdu1.image  #the VM image of VDU1
+       interfaces:
+         Standard:
+           configure:
+             implementation: vdu1_configure.sh
+
+     CP11:
+       type: tosca.nodes.nfv.CP
+       requirements:
+         virtualbinding: VDU1
+         virtualLink: net_mgmt
+
+     CP12:
+       type: tosca.nodes.nfv.CP
+       properties:
+         anti_spoof_protection: false
+       requirements:
+         virtualbinding: VDU1
+         virtualLink: net_ingress
+
+     CP13:
+       type: tosca.nodes.nfv.CP
+       properties:
+        anti_spoof_protection: false
+       requirements:
+        tualbinding: VDU1
+        virtualLink: net_egress

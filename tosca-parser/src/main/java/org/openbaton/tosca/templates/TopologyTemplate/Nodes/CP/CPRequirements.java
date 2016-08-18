@@ -1,15 +1,33 @@
 package org.openbaton.tosca.templates.TopologyTemplate.Nodes.CP;
 
+import java.util.Map;
+
 /**
  * Created by rvl on 17.08.16.
  */
 public class CPRequirements {
 
-    private String virtualLink;
-    private String virtualBinding;
+    //TODO: FIX FOR LIST OF PAIRS
+    private String virtualLink = null;
+    private String virtualBinding = null;
+    private String floatingIP = null;
 
 
-    public CPRequirements(){}
+    public CPRequirements(Object requirements){
+        Map<String, String> requirementsMap = (Map<String, String>) requirements;
+
+        if(requirementsMap.containsKey("virtualLink")){
+            this.virtualLink = requirementsMap.get("virtualLink");
+        }
+
+        if(requirementsMap.containsKey("virtualBinding")){
+            this.virtualBinding = requirementsMap.get("virtualBinding");
+        }
+
+        if(requirementsMap.containsKey("floating_ip")){
+            this.floatingIP = requirementsMap.get("floating_ip");
+        }
+    }
 
     public String getVirtualLink() {
         return virtualLink;
@@ -27,10 +45,20 @@ public class CPRequirements {
         this.virtualBinding = virtualBinding;
     }
 
+
+    public String getFloatingIP() {
+        return floatingIP;
+    }
+
+    public void setFloatingIP(String floatingIP) {
+        this.floatingIP = floatingIP;
+    }
+
     @Override
     public String toString(){
         return "CP Requirements: \n" +
                 "VirtualBinding: " + virtualBinding + "\n" +
+                "FloatingIP: " + floatingIP + "\n" +
                 "VirtualLink: " + virtualLink;
     }
 }
