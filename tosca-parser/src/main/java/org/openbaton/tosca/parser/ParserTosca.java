@@ -69,21 +69,29 @@ public class ParserTosca implements org.openbaton.tosca.parser.interfaces.Parser
     }
 
     public NetworkServiceDescriptor getNetworkServiceDescriptor(Definitions definitions) throws NotSupportedType {
+
         this.definitions = definitions;
+
         this.networkServiceDescriptor = new NetworkServiceDescriptor();
         networkServiceDescriptor.setName(definitions.getTosca_definitions_version());
         networkServiceDescriptor.setVendor(definitions.getMetadata().getVendor());
         networkServiceDescriptor.setVersion(definitions.getMetadata().getVersion());
         networkServiceDescriptor.setVld(new HashSet<VirtualLinkDescriptor>());
+
         NodeTemplates nodeTemplates = definitions.getTopology_template();
+
         for (String nodeName : nodeTemplates.getNode_templates().keySet()) {
+
             String type = nodeTemplates.getNode_templates().get(nodeName).getType();
             NodeTemplate nodeTemplate = nodeTemplates.getNode_templates().get(nodeName);
 
             if (type.startsWith("openbaton.type.VNF.")) {
+
                 VirtualNetworkFunctionDescriptor vnfd = new VirtualNetworkFunctionDescriptor();
+
                 Set<InternalVirtualLink> internaVLs = new HashSet<InternalVirtualLink>();
                 Set<VirtualDeploymentUnit> virtualDeploymentUnits = new HashSet<VirtualDeploymentUnit>();
+
                 vnfd.setVdu(virtualDeploymentUnits);
                 vnfd.setVirtual_link(internaVLs);
                 vnfd.setName(nodeName.toString());
@@ -101,7 +109,9 @@ public class ParserTosca implements org.openbaton.tosca.parser.interfaces.Parser
                 Configuration configuration = new Configuration();
                 configuration.setName(properties.getConfigurations().getName());
                 Set<ConfigurationParameter> configurationParameters = new HashSet<>();
+
                 for (HashMap<String, String> config : properties.getConfigurations().getConfigurationParameters()) {
+
                     for (String key : config.keySet()) {
                         ConfigurationParameter cfgP = new ConfigurationParameter();
                         cfgP.setConfKey(key);
@@ -114,11 +124,13 @@ public class ParserTosca implements org.openbaton.tosca.parser.interfaces.Parser
                 List<Map<String, Object>> requirements = (List<Map<String, Object>>) nodeTemplate.getRequirements();
 
                 for (Map<String, Object> req : requirements) {
+
                     for (String key : req.keySet()) {
                         if (key.equals("host")) {
                             String nodeRequest = (String) ((Map<String, Object>) req.get(key)).get("node");
                             vnfd.getVdu().add((VirtualDeploymentUnit) getObject(nodeRequest));
                         }
+
                         if (key.equals("virtualLink")) {
                             InternalVirtualLink ivl = new InternalVirtualLink();
                             String linkName = (String) req.get(key);
@@ -127,8 +139,11 @@ public class ParserTosca implements org.openbaton.tosca.parser.interfaces.Parser
                         }
                     }
                 }
+
                 Set<VNFDeploymentFlavour> deploymentFlavours = new HashSet<VNFDeploymentFlavour>();
+
                 for (HashMap<String, String> deploy_flavour : properties.getDeployment_flavour()) {
+
                     for (String key : deploy_flavour.keySet()) {
                         VNFDeploymentFlavour dp = new VNFDeploymentFlavour();
                         dp.setFlavour_key(deploy_flavour.get(key));
@@ -159,6 +174,7 @@ public class ParserTosca implements org.openbaton.tosca.parser.interfaces.Parser
     }
 
     public VirtualNetworkFunctionDescriptor findVNFD(String vndName) {
+
         for (VirtualNetworkFunctionDescriptor vnfd : networkServiceDescriptor.getVnfd()) {
             if (vnfd.getName().equals(vndName))
                 return vnfd;
@@ -207,7 +223,9 @@ public class ParserTosca implements org.openbaton.tosca.parser.interfaces.Parser
                         List<Map<String, Object>> requirements = (List<Map<String, Object>>) nodeTemplate.getRequirements();
                         for (Map<String, Object> req : requirements) {
                             for (String keyReq : req.keySet()) {
+
                                 if (keyReq.equals("virtual_link")) {
+
                                     Set<VNFComponent> vnfComponents = new HashSet<>();
                                     List<String> virtual_links = (ArrayList<String>) req.get(keyReq);
                                     VNFComponent vnfc = new VNFComponent();

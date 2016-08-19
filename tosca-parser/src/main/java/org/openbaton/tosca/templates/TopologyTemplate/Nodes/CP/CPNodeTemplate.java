@@ -7,15 +7,15 @@ import org.openbaton.tosca.templates.TopologyTemplate.Nodes.NodeTemplate;
  */
 public class CPNodeTemplate{
 
+    private String name = null;
     private String type = null;
     private CPProperties properties = null;
-    //TODO: Edit Requirements
     private CPRequirements requirements = null;
     private CPAttributes attributes = null;
 
     public CPNodeTemplate(){}
 
-    public CPNodeTemplate(NodeTemplate nodeTemplate){
+    public CPNodeTemplate(NodeTemplate nodeTemplate, String name){
         this.type = nodeTemplate.getType();
 
         if(nodeTemplate.getProperties() != null ){
@@ -61,12 +61,23 @@ public class CPNodeTemplate{
         this.type = type;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     @Override
     public String toString(){
         return "CP Node: \n" +
+                "name: " + name + "\n" +
                 "type: " + type + "\n" +
                 "Properties: " + properties + "\n" +
                 "Requirements: " + requirements + "\n" +
                 "Attributes: " + attributes;
     }
+
+
 }

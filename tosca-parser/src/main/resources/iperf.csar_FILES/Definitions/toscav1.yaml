@@ -1,10 +1,11 @@
-tosca_definitions_version: tosca_iperf_1_0_0
+tosca_definitions_version: tosca_simple_profile_for_type_1_0_0
 tosca_default_namespace:    # Optional. default namespace (schema, types version)
 description: NSD for deploing an iperf scenario
 metadata:
   ID:                 # ID of this Network Service Descriptor
   vendor: Fokus       # Provider or vendor of the Network Service
-  version: 0.1 Alpha  # Version of the Network Service Descriptor
+  version: 0.1 Alpha  # Version of the Network Service Descriptor imports:
+
 
 topology_template:
   node_templates:
@@ -13,13 +14,13 @@ topology_template:
       properties:
         id:
         vendor: Fokus
-        version: 0.1
+        version:
         configurations:
           name: server-configurations
           configurationParameters:
             - key: value
             - key2: value2
-        vnfPackageLocation: https://gitlab.fokus.fraunhofer.de/openbaton/scripts-test-public.git
+        vnfPackageLocation: 
         deployment_flavour:
           - flavour_key: m1.small
       requirements:
@@ -42,7 +43,7 @@ topology_template:
           configurationParameters:
             - key: value
             - key2: value2
-        vnfPackageLocation: https://gitlab.fokus.fraunhofer.de/openbaton/scripts-test-public.git
+        vnfPackageLocation: 
         deployment_flavour:
           - flavour_key: m1.small
       requirements:
@@ -94,6 +95,7 @@ topology_template:
     CP1: #endpoints of VNF1
       type: tosca.nodes.nfv.CP
       properties:
+        floatingIp: random
       requirements:
         virtualbinding: VDU1
       virtualLink: private

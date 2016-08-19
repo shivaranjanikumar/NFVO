@@ -15,6 +15,20 @@ node_types:
   forwarder_egres:
   type: tosca.capabilities.nfv.Forwarder
 
+vnfPackageLocation: https://gitlab.fokus.fraunhofer.de/openbaton/scripts-test-public.git
+deploymentFlavour:
+  # - flavour_key: m1.small Redundant ?
+  - m1.small
+
+interfaces:
+    lifecycle: # lifecycle
+        INSTANTIATE:
+          - install.sh
+        CONFIGURE:
+          - server_configure_only.sh
+        START:
+           - iperf_client_start.sh
+
 topology_template:
    inputs:
    substitution_mappings:
@@ -22,6 +36,11 @@ topology_template:
    node_templates:
      VDU1:
        type: tosca.nodes.nfv.VDU
+       properties:
+          vm_image:
+           - ubuntu-14.04-server-cloudimg-amd64-disk1
+          scale_in_out: 2
+          vim_instance_name: vim-instance
        capabilities:
          nfv_compute:
            properties:
@@ -35,24 +54,31 @@ topology_template:
            configure:
              implementation: vdu1_configure.sh
 
-     CP11:
-       type: tosca.nodes.nfv.CP
-       requirements:
-         virtualbinding: VDU1
-         virtualLink: net_mgmt
-
      CP12:
-       type: tosca.nodes.nfv.CP
-       properties:
-         anti_spoof_protection: false
-       requirements:
-         virtualbinding: VDU1
-         virtualLink: net_ingress
+         type: tosca.nodes.nfv.CP
+         properties:
+             type: hhuh
+             anti_spoof_protection: false
+         requirements:
+           virtualLink: InternalNetwork
+           virtualBinding: VDU1
+           floatingIP: 3
 
      CP13:
-       type: tosca.nodes.nfv.CP
-       properties:
-        anti_spoof_protection: false
-       requirements:
-        tualbinding: VDU1
-        virtualLink: net_egress
+              type: tosca.nodes.nfv.CP
+              properties:
+                  type: hhuh
+                  anti_spoof_protection: false
+              requirements:
+                virtualLink: InternalNetwork
+                virtualBinding: VDU1
+                floatingIP: 3
+
+
+     private:
+           type: tosca.nodes.nfv.VL
+           properties:
+             vendor: Fokus
+           capabilities:
+             virtual_linkable:
+               valid_source_types: tosca.nodes.nfv.CP

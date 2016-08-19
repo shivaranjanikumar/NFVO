@@ -110,16 +110,20 @@ public class ParserCSAR implements org.openbaton.tosca.parser.interfaces.ParserC
     }
 
     public void storeScriptsFromCSAR(byte[] zipFile) throws Exception {
+
         VNFPackage vnfPackage = new VNFPackage();
         vnfPackage.setScripts(new HashSet<Script>());
+
         ZipInputStream zipStream = new ZipInputStream(new ByteArrayInputStream(zipFile));
         File dir = new File(this.pathUnzipFiles);
         UrlValidator urlValidator = new UrlValidator();
         if (dir.exists())
             dir.delete();
         dir.mkdir();
+
         List<String> fileList = new ArrayList<>();
         ZipEntry entry;
+
         try {
             while ((entry = zipStream.getNextEntry()) != null) {
                 String currentEntry = entry.getName();
@@ -195,6 +199,7 @@ public class ParserCSAR implements org.openbaton.tosca.parser.interfaces.ParserC
             String entryDefinition = "Entry-Definitions:";
             String author = "Created-By:";
             String version = "CSAR-Version:";
+
             if (strLine.contains(entryDefinition)) {
                 fileDefinition = strLine.substring(entryDefinition.length(), strLine.length()).trim();
 

@@ -175,6 +175,7 @@ public class NodeTemplate implements INodeTemplete {
                 lifecycleEvent.setEvent(Event.STOP);
             if (lifecycleEvent.getLifecycle_events() == null)
                 lifecycleEvent.setLifecycle_events(new ArrayList<String>());
+
             if (lifecycleEvent.getEvent().equals(Event.CONFIGURE)) {
                 Map<String, Object> configureEvent = (Map<String, Object>) ((Map<String, Object>) life.get(lifeCycleTag)).get(lifecycleName);
                 lifecycleEvent.getLifecycle_events().add((String) configureEvent.get("implementation"));

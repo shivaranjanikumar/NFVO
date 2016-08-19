@@ -9,11 +9,13 @@ import java.util.Map;
  */
 public class VDUNodeTemplate {
 
+    //TODO: FIGURE OUT WHAT IS RELEVANT AND GET RID OF THE OTHER STUFF
     private String type;
     private String name;
     private VDUCapabilities capabilities = null;
     private VDUArtifact vduArtifact = null;
     private Object interfaces = null;
+    private VDUProperties properties = null;
 
     public VDUNodeTemplate(NodeTemplate nodeTemplate, String name){
 
@@ -32,7 +34,9 @@ public class VDUNodeTemplate {
             capabilities = new VDUCapabilities(nodeTemplate.getCapabilities());
         }
 
-
+        if(nodeTemplate.getProperties() != null){
+            properties = new VDUProperties(nodeTemplate.getProperties());
+        }
     }
 
     public String getType() {
@@ -71,10 +75,19 @@ public class VDUNodeTemplate {
     public String toString(){
         return "Node: \n" +
                 "type: " + type + "\n" +
+                "name: " + name + "\n" +
                 "Capabilities: " + capabilities + "\n" +
                 "Interfaces: " + interfaces + "\n" +
-                "Artifacts: " + vduArtifact + "\n";
+                "Artifacts: " + vduArtifact + "\n" +
+                "Properties: " + properties + "\n";
     }
 
 
+    public VDUProperties getProperties() {
+        return properties;
+    }
+
+    public void setProperties(VDUProperties properties) {
+        this.properties = properties;
+    }
 }
