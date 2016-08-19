@@ -53,6 +53,7 @@ public class ToscaTest {
 
         System.out.println(vnfdInput.getTopology_template().getVDUNodes());
         System.out.println(vnfdInput.getTopology_template().getCPNodes());
+        System.out.println(vnfdInput.getTopology_template().getVNFNodes());
     }
 
     @Test

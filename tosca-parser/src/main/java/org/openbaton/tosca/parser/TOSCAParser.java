@@ -5,6 +5,7 @@ import org.openbaton.tosca.templates.NSDTemplate;
 import org.openbaton.tosca.templates.TopologyTemplate.Nodes.CP.CPNodeTemplate;
 import org.openbaton.tosca.templates.TopologyTemplate.Nodes.VDU.VDUNodeTemplate;
 import org.openbaton.tosca.templates.TopologyTemplate.Nodes.VL.VLNodeTemplate;
+import org.openbaton.tosca.templates.TopologyTemplate.Nodes.VNF.VNFNodeTemplate;
 import org.openbaton.tosca.templates.VNFDTemplate;
 
 import java.util.HashSet;
@@ -68,6 +69,15 @@ public class TOSCAParser {
         return vdu;
     }
 
+    private VirtualNetworkFunctionDescriptor parseVNFNode(VNFNodeTemplate vnf){
+
+        VirtualNetworkFunctionDescriptor vnfd = new VirtualNetworkFunctionDescriptor();
+
+
+
+        return vnfd;
+    }
+
     //TODO: Parse VNFDTemplate and return VNFD instance
     public VirtualNetworkFunctionDescriptor parseVNFDTemplate(VNFDTemplate vnfdTemplate){
 
@@ -107,5 +117,10 @@ public class TOSCAParser {
     }
 
     //TODO: Parse NSDTemplate and return NSD instance
-    public void parseNSDTemplate(NSDTemplate nsdTemplate){}
+    public NetworkServiceDescriptor parseNSDTemplate(NSDTemplate nsdTemplate){
+
+        NetworkServiceDescriptor nsd = new NetworkServiceDescriptor();
+
+        return nsd;
+    }
 }

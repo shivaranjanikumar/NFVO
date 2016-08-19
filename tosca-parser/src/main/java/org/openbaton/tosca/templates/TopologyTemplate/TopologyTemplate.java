@@ -4,6 +4,7 @@ import org.openbaton.tosca.templates.TopologyTemplate.Nodes.CP.CPNodeTemplate;
 import org.openbaton.tosca.templates.TopologyTemplate.Nodes.NodeTemplate;
 import org.openbaton.tosca.templates.TopologyTemplate.Nodes.VDU.VDUNodeTemplate;
 import org.openbaton.tosca.templates.TopologyTemplate.Nodes.VL.VLNodeTemplate;
+import org.openbaton.tosca.templates.TopologyTemplate.Nodes.VNF.VNFNodeTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -91,6 +92,23 @@ public class TopologyTemplate {
         }
 
         return vlNodes;
+    }
+
+    public List<VNFNodeTemplate> getVNFNodes(){
+
+        List<VNFNodeTemplate> vnfNodes = new ArrayList<>();
+
+        for(String nodeName : node_templates.keySet()){
+
+            NodeTemplate n = node_templates.get(nodeName);
+            if(Objects.equals(n.getType(), "openbaton.type.VNF.GENERIC")){
+
+                VNFNodeTemplate vnfNode = new VNFNodeTemplate(n, nodeName);
+                vnfNodes.add(vnfNode);
+            }
+        }
+
+        return vnfNodes;
     }
 
     @Override

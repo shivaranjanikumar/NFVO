@@ -82,3 +82,25 @@ topology_template:
            capabilities:
              virtual_linkable:
                valid_source_types: tosca.nodes.nfv.CP
+
+
+     iperf-client:
+        type: openbaton.type.VNF.GENERIC
+        properties:
+          ID: x
+          vendor: Fokus
+          version: 0.1
+          vnfPackageLocation: https://gitlab.fokus.fraunhofer.de/openbaton/scripts-test-public.git
+          deploymentFlavour:
+            - flavour_key: m1.small
+        requirements:
+          - virtualLink: private
+          - host: VDU1
+        interfaces:
+          lifecycle: # lifecycle
+            INSTANCIATE:
+              - install.sh
+            CONFIGURE:
+              - server_configure_only.sh
+            START:
+              - iperf_client_start.sh
