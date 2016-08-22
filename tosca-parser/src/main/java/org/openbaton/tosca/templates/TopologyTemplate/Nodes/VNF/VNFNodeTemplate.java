@@ -2,6 +2,8 @@ package org.openbaton.tosca.templates.TopologyTemplate.Nodes.VNF;
 
 import org.openbaton.tosca.templates.TopologyTemplate.Nodes.NodeTemplate;
 
+import java.util.Map;
+
 /**
  * Created by rvl on 19.08.16.
  */
@@ -23,7 +25,11 @@ public class VNFNodeTemplate {
 
         requirements = new VNFRequirements(nodeTemplate.getRequirements());
 
-        //interfaces.setLifecycle(nodeTemplate.getInterfaces());
+        interfaces = new VNFInterfaces();
+        Map<String,Object> interfaceMap = (Map<String, Object>) nodeTemplate.getInterfaces();
+        if( interfaceMap.containsKey("lifecycle")){
+            interfaces.setLifecycle(interfaceMap.get("lifecycle"));
+        }
     }
 
     public String getType() {
@@ -64,5 +70,15 @@ public class VNFNodeTemplate {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public String toString(){
+
+        return "VNFD Node; " + "\n" +
+                "type " + type +"\n" +
+                "prop: " + properties +  "\n" +
+                "reqs: " +  requirements + "\n" +
+                "interfaces: " + interfaces + "\n";
     }
 }

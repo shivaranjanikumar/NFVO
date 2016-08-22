@@ -10,6 +10,7 @@ public class CPProperties {
     private String type = null;
     //TODO: FIX
     private boolean anti_spoof_protection = false;
+    private String floatingIP = "";
 
     public CPProperties(Object properties){
         Map<String, Object> propertiesMap = (Map<String, Object>) properties;
@@ -20,6 +21,10 @@ public class CPProperties {
 
         if(propertiesMap.containsKey("anti_spoof_protection")){
             this.anti_spoof_protection = (Boolean) propertiesMap.get("anti_spoof_protection");
+        }
+
+        if(propertiesMap.containsKey("floating_ip")){
+            this.floatingIP = (String) propertiesMap.get("floating_ip");
         }
     }
 
@@ -39,10 +44,19 @@ public class CPProperties {
         this.anti_spoof_protection = anti_spoof_protection;
     }
 
+    public String getFloatingIP() {
+        return floatingIP;
+    }
+
+    public void setFloatingIP(String floatingIP) {
+        this.floatingIP = floatingIP;
+    }
+
     @Override
     public String toString(){
         return "CP Properties: \n" +
                 "Type: " + type + "\n" +
+                "FloatingIp: " + floatingIP + "\n" +
                 "AntiSpoof: " + anti_spoof_protection;
     }
 }

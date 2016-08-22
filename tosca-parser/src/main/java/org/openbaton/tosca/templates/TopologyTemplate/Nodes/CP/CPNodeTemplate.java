@@ -29,7 +29,7 @@ public class CPNodeTemplate{
         }
     }
 
-    public Object getProperties() {
+    public CPProperties getProperties() {
         return properties;
     }
 

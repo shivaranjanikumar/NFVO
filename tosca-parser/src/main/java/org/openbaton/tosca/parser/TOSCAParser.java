@@ -2,15 +2,15 @@ package org.openbaton.tosca.parser;
 
 import org.openbaton.catalogue.mano.descriptor.*;
 import org.openbaton.tosca.templates.NSDTemplate;
+import org.openbaton.tosca.templates.RelationshipsTemplate;
 import org.openbaton.tosca.templates.TopologyTemplate.Nodes.CP.CPNodeTemplate;
 import org.openbaton.tosca.templates.TopologyTemplate.Nodes.VDU.VDUNodeTemplate;
 import org.openbaton.tosca.templates.TopologyTemplate.Nodes.VL.VLNodeTemplate;
 import org.openbaton.tosca.templates.TopologyTemplate.Nodes.VNF.VNFNodeTemplate;
+import org.openbaton.tosca.templates.TopologyTemplate.TopologyTemplate;
 import org.openbaton.tosca.templates.VNFDTemplate;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by rvl on 17.08.16.
@@ -34,12 +34,11 @@ public class TOSCAParser {
         VNFDConnectionPoint cp = new VNFDConnectionPoint();
 
         cp.setVirtual_link_reference(cpTemplate.getRequirements().getVirtualLink());
-        cp.setFloatingIp(cpTemplate.getRequirements().getFloatingIP());
+        //cp.setFloatingIp(cpTemplate.getProperties().getFloatingIP());
 
         return cp;
     }
 
-    //TODO: Parse a VDU Template and return VDU instance
     private VirtualDeploymentUnit parseVDUTemplate(VDUNodeTemplate vduTemplate, List<CPNodeTemplate> cps){
 
         VirtualDeploymentUnit vdu = new VirtualDeploymentUnit();
@@ -69,23 +68,89 @@ public class TOSCAParser {
         return vdu;
     }
 
-    private VirtualNetworkFunctionDescriptor parseVNFNode(VNFNodeTemplate vnf){
+    private void parseRelationships(NetworkServiceDescriptor nsd,
+                                             Map<String, RelationshipsTemplate> relationshipsTemplates){
+
+        /*
+        for(VirtualNetworkFunctionDescriptor vnfd : nsd.getVnfd()){
+
+            if(relationshipsTemplate.getSource().equals(vnfd.getName())){
+                vnfDependency.setSource(vnfd);
+            }
+
+            if(relationshipsTemplate.getTarget().equals(vnfd.getName())){
+                vnfDependency.setTarget(vnfd);
+            }
+        }*/
+
+        for(String key : relationshipsTemplates.keySet()) {
+            VNFDependency vnfDependency = new VNFDependency();
+
+            RelationshipsTemplate relationshipsTemplate = relationshipsTemplates.get(key);
+            VirtualNetworkFunctionDescriptor vnfdSouce = new VirtualNetworkFunctionDescriptor();
+            VirtualNetworkFunctionDescriptor vnfdTarget = new VirtualNetworkFunctionDescriptor();
+
+            vnfdSouce.setName(relationshipsTemplate.getSource());
+            vnfdTarget.setName(relationshipsTemplate.getTarget());
+
+            vnfDependency.setSource(vnfdSouce);
+            vnfDependency.setTarget(vnfdTarget);
+            vnfDependency.setParameters(new HashSet<String>(relationshipsTemplate.getParameters()));
+
+            nsd.getVnf_dependency().add(vnfDependency);
+        }
+    }
+
+    private VirtualNetworkFunctionDescriptor parseVNFNode(VNFNodeTemplate vnf, TopologyTemplate topologyTemplate){
 
         VirtualNetworkFunctionDescriptor vnfd = new VirtualNetworkFunctionDescriptor();
 
+        vnfd.setName(vnf.getName());
+        vnfd.setVendor(vnf.getProperties().getVendor());
+        vnfd.setVersion((Double.toString(vnf.getProperties().getVersion())));
 
+        vnfd.setDeployment_flavour(vnf.getProperties().getDeploymentFlavourConverted());
+        vnfd.setVnfPackageLocation(vnf.getProperties().getVnfPackageLocation());
+
+        ArrayList<String> vduList = vnf.getRequirements().getVDUS();
+
+        // ADD VDUs
+        Set<VirtualDeploymentUnit> vdus = new HashSet<>();
+
+        for(VDUNodeTemplate vdu : topologyTemplate.getVDUNodes()){
+
+            if( vduList.contains(vdu.getName()) ){
+
+                vdus.add(parseVDUTemplate(vdu, topologyTemplate.getCPNodes()));
+            }
+        }
+        vnfd.setVdu(vdus);
+
+        // ADD VLs
+        ArrayList<String> vl_list = vnf.getRequirements().getVirtualLinks();
+        Set<InternalVirtualLink> vls = new HashSet<>();
+
+        for(VLNodeTemplate vl : topologyTemplate.getVLNodes()){
+
+            if(vl_list.contains(vl.getName())){
+
+                vls.add(parseVL(vl));
+            }
+        }
+        vnfd.setVirtual_link(vls);
+
+        vnfd.setLifecycle_event(vnf.getInterfaces().getOpLifecycle());
 
         return vnfd;
     }
 
-    //TODO: Parse VNFDTemplate and return VNFD instance
     public VirtualNetworkFunctionDescriptor parseVNFDTemplate(VNFDTemplate vnfdTemplate){
 
         VirtualNetworkFunctionDescriptor vnfd = new VirtualNetworkFunctionDescriptor();
 
         // ADD SETTINGS
 
-        vnfd.setId(vnfdTemplate.getMetadata().getID());
+        vnfd.setName(vnfdTemplate.getMetadata().getID());
         vnfd.setVendor(vnfdTemplate.getMetadata().getVendor());
         vnfd.setVersion(vnfdTemplate.getMetadata().getVersion());
 
@@ -95,7 +160,6 @@ public class TOSCAParser {
         // ADD VDUs
         Set<VirtualDeploymentUnit> vdus = new HashSet<>();
 
-        //TODO: MB Add nodes based on requirements instead of list ?
         for(VDUNodeTemplate vdu : vnfdTemplate.getTopology_template().getVDUNodes()){
 
             vdus.add(parseVDUTemplate(vdu, vnfdTemplate.getTopology_template().getCPNodes()));
@@ -109,6 +173,7 @@ public class TOSCAParser {
 
             vls.add(parseVL(vl));
         }
+
         vnfd.setVirtual_link(vls);
 
         vnfd.setLifecycle_event(vnfdTemplate.getInterfaces().getOpLifecycle());
@@ -120,6 +185,31 @@ public class TOSCAParser {
     public NetworkServiceDescriptor parseNSDTemplate(NSDTemplate nsdTemplate){
 
         NetworkServiceDescriptor nsd = new NetworkServiceDescriptor();
+
+        nsd.setVersion(nsdTemplate.getMetadata().getVersion());
+        nsd.setVendor(nsdTemplate.getMetadata().getVendor());
+        nsd.setName(nsdTemplate.getMetadata().getID());
+
+        // ADD VNFDS
+
+        for(VNFNodeTemplate vnfNodeTemplate : nsdTemplate.getTopology_template().getVNFNodes()){
+
+            VirtualNetworkFunctionDescriptor vnf = parseVNFNode(vnfNodeTemplate, nsdTemplate.getTopology_template());
+
+            nsd.getVnfd().add(vnf);
+        }
+
+        // ADD VLS
+
+        /*for( VLNodeTemplate vlNode :  nsdTemplate.getTopology_template().getVLNodes()){
+
+            VirtualLinkDescriptor vl = new VirtualLinkDescriptor();
+            vl.setName(vlNode.getName());
+            nsd.getVld().add(vl);
+        }*/
+
+        // ADD DEPENDENCIES
+        parseRelationships(nsd, nsdTemplate.getRelationships_template());
 
         return nsd;
     }

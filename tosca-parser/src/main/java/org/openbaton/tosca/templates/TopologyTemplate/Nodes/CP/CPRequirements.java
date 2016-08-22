@@ -10,7 +10,6 @@ public class CPRequirements {
     //TODO: FIX FOR LIST OF PAIRS
     private String virtualLink = null;
     private String virtualBinding = null;
-    private String floatingIP = null;
 
 
     public CPRequirements(Object requirements){
@@ -22,10 +21,6 @@ public class CPRequirements {
 
         if(requirementsMap.containsKey("virtualBinding")){
             this.virtualBinding = requirementsMap.get("virtualBinding");
-        }
-
-        if(requirementsMap.containsKey("floating_ip")){
-            this.floatingIP = requirementsMap.get("floating_ip");
         }
     }
 
@@ -45,20 +40,10 @@ public class CPRequirements {
         this.virtualBinding = virtualBinding;
     }
 
-
-    public String getFloatingIP() {
-        return floatingIP;
-    }
-
-    public void setFloatingIP(String floatingIP) {
-        this.floatingIP = floatingIP;
-    }
-
     @Override
     public String toString(){
         return "CP Requirements: \n" +
                 "VirtualBinding: " + virtualBinding + "\n" +
-                "FloatingIP: " + floatingIP + "\n" +
                 "VirtualLink: " + virtualLink;
     }
 }

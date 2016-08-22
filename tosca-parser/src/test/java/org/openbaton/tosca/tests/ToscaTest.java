@@ -1,8 +1,11 @@
 package org.openbaton.tosca.tests;
 
+import com.google.gson.Gson;
 import org.junit.Test;
+import org.openbaton.catalogue.mano.descriptor.NetworkServiceDescriptor;
 import org.openbaton.catalogue.mano.descriptor.VirtualNetworkFunctionDescriptor;
 import org.openbaton.tosca.parser.TOSCAParser;
+import org.openbaton.tosca.templates.NSDTemplate;
 import org.openbaton.tosca.templates.TopologyTemplate.Nodes.CP.CPNodeTemplate;
 import org.openbaton.tosca.templates.TopologyTemplate.Nodes.VDU.VDUNodeTemplate;
 import org.openbaton.tosca.templates.TopologyTemplate.Nodes.VL.VLNodeTemplate;
@@ -144,7 +147,8 @@ public class ToscaTest {
 
         VirtualNetworkFunctionDescriptor vnfd = parser.parseVNFDTemplate(vnfdInput);
 
-        System.out.println(vnfd.toString());
+        Gson gson = new Gson();
+        System.out.println(gson.toJson(vnfd));
 
     }
 
@@ -163,7 +167,27 @@ public class ToscaTest {
         TOSCAParser parser = new TOSCAParser();
 
         VirtualNetworkFunctionDescriptor vnfd = parser.parseVNFDTemplate(vnfdInput);
+        Gson gson = new Gson();
+        System.out.println(gson.toJson(vnfd));
+    }
 
-        System.out.println(vnfd.toString());
+    @Test
+    public void testNSDIperfTemplate() throws FileNotFoundException, NotSupportedType{
+
+        InputStream nsdFile = new FileInputStream(new File("src/main/resources/Testing/testNSDIperf.yaml"));
+
+        Constructor constructor = new Constructor(NSDTemplate.class);
+        TypeDescription typeDescription = new TypeDescription(NSDTemplate.class);
+        constructor.addTypeDescription(typeDescription);
+
+        Yaml yaml = new Yaml(constructor);
+        NSDTemplate nsdInput = yaml.loadAs(nsdFile, NSDTemplate.class);
+
+        TOSCAParser parser = new TOSCAParser();
+
+        NetworkServiceDescriptor nsd = parser.parseNSDTemplate(nsdInput);
+
+        Gson gson = new Gson();
+        System.out.println(gson.toJson(nsd));
     }
 }

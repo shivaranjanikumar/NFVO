@@ -1,7 +1,11 @@
 package org.openbaton.tosca.templates.TopologyTemplate.Nodes.VNF;
 
+import org.openbaton.catalogue.mano.common.VNFDeploymentFlavour;
+
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by rvl on 19.08.16.
@@ -78,6 +82,22 @@ public class VNFProperties {
 
     public void setDeploymentFlavour(ArrayList<String> deploymentFlavour) {
         this.deploymentFlavour = deploymentFlavour;
+    }
+
+    public Set<VNFDeploymentFlavour> getDeploymentFlavourConverted(){
+
+        Set<VNFDeploymentFlavour> vnfdf = new HashSet<>();
+
+        if(deploymentFlavour != null){
+            for(String df : deploymentFlavour){
+
+                VNFDeploymentFlavour new_df = new VNFDeploymentFlavour();
+                new_df.setFlavour_key(df);
+                vnfdf.add(new_df);
+            }
+        }
+
+        return vnfdf;
     }
 
     public Object getConfigurations() {

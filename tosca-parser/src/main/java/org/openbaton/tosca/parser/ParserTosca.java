@@ -188,13 +188,18 @@ public class ParserTosca implements org.openbaton.tosca.parser.interfaces.Parser
         for (String relationshipNode : definitions.getrelationships_template().keySet()) {
             if (definitions.getrelationships_template().get(relationshipNode) != null) {
                 VNFDependency vnfDependency = new VNFDependency();
+
                 Relationships relationships = definitions.getrelationships_template().get(relationshipNode);
+
                 VirtualNetworkFunctionDescriptor tempVnfdSource = new VirtualNetworkFunctionDescriptor();
                 VirtualNetworkFunctionDescriptor tempVnfdTarget = new VirtualNetworkFunctionDescriptor();
+
                 tempVnfdSource.setName(relationships.getSource());
                 vnfDependency.setSource(tempVnfdSource);
+
                 tempVnfdTarget.setName(relationships.getTarget());
                 vnfDependency.setTarget(tempVnfdTarget);
+
                 vnfDependency.setParameters(relationships.getParameters());
                 vnfDependencies.add(vnfDependency);
 

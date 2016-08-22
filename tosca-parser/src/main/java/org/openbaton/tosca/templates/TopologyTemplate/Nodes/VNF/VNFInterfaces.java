@@ -3,8 +3,8 @@ package org.openbaton.tosca.templates.TopologyTemplate.Nodes.VNF;
 import org.openbaton.catalogue.mano.common.Event;
 import org.openbaton.catalogue.mano.common.LifecycleEvent;
 
+import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -18,6 +18,7 @@ public class VNFInterfaces {
     public Object getLifecycle(){
         return lifecycle;
     }
+
     public Set<LifecycleEvent> getOpLifecycle() {
 
         Map<String, Object> lifecycleMap = (Map<String, Object>) lifecycle;
@@ -47,7 +48,7 @@ public class VNFInterfaces {
                         break;
                 }
 
-                lifecycleEvent.setLifecycle_events((List<String>) lifecycleMap.get(lifecycleName));
+                lifecycleEvent.setLifecycle_events((ArrayList<String>) lifecycleMap.get(lifecycleName));
 
                 lifecycleEvents.add(lifecycleEvent);
             }
