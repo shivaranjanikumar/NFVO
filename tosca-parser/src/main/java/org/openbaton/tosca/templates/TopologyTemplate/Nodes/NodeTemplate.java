@@ -80,4 +80,5 @@ public class NodeTemplate {
                 "Artifacts: " + artifacts + "\n" +
                 "Attributes: " + attributes;
     }
+
 }

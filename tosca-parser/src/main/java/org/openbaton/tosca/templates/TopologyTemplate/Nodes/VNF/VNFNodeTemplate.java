@@ -81,4 +81,5 @@ public class VNFNodeTemplate {
                 "reqs: " +  requirements + "\n" +
                 "interfaces: " + interfaces + "\n";
     }
+
 }

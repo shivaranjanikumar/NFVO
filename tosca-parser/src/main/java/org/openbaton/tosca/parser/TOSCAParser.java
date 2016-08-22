@@ -1,11 +1,14 @@
 package org.openbaton.tosca.parser;
 
 import org.openbaton.catalogue.mano.descriptor.*;
+import org.openbaton.catalogue.nfvo.Configuration;
+import org.openbaton.catalogue.nfvo.ConfigurationParameter;
 import org.openbaton.tosca.templates.NSDTemplate;
 import org.openbaton.tosca.templates.RelationshipsTemplate;
 import org.openbaton.tosca.templates.TopologyTemplate.Nodes.CP.CPNodeTemplate;
 import org.openbaton.tosca.templates.TopologyTemplate.Nodes.VDU.VDUNodeTemplate;
 import org.openbaton.tosca.templates.TopologyTemplate.Nodes.VL.VLNodeTemplate;
+import org.openbaton.tosca.templates.TopologyTemplate.Nodes.VNF.VNFConfigurations;
 import org.openbaton.tosca.templates.TopologyTemplate.Nodes.VNF.VNFNodeTemplate;
 import org.openbaton.tosca.templates.TopologyTemplate.TopologyTemplate;
 import org.openbaton.tosca.templates.VNFDTemplate;
@@ -34,7 +37,12 @@ public class TOSCAParser {
         VNFDConnectionPoint cp = new VNFDConnectionPoint();
 
         cp.setVirtual_link_reference(cpTemplate.getRequirements().getVirtualLink());
-        //cp.setFloatingIp(cpTemplate.getProperties().getFloatingIP());
+
+        if(cpTemplate.getProperties() != null){
+            if(cpTemplate.getProperties().getFloatingIP() != null){
+                cp.setFloatingIp(cpTemplate.getProperties().getFloatingIP());
+            }
+        }
 
         return cp;
     }
@@ -70,18 +78,6 @@ public class TOSCAParser {
 
     private void parseRelationships(NetworkServiceDescriptor nsd,
                                              Map<String, RelationshipsTemplate> relationshipsTemplates){
-
-        /*
-        for(VirtualNetworkFunctionDescriptor vnfd : nsd.getVnfd()){
-
-            if(relationshipsTemplate.getSource().equals(vnfd.getName())){
-                vnfDependency.setSource(vnfd);
-            }
-
-            if(relationshipsTemplate.getTarget().equals(vnfd.getName())){
-                vnfDependency.setTarget(vnfd);
-            }
-        }*/
 
         for(String key : relationshipsTemplates.keySet()) {
             VNFDependency vnfDependency = new VNFDependency();
@@ -141,6 +137,25 @@ public class TOSCAParser {
 
         vnfd.setLifecycle_event(vnf.getInterfaces().getOpLifecycle());
 
+        //ADD CONFIGURATIONS
+        if( vnf.getProperties().getConfigurations() != null ){
+            Configuration configuration = new Configuration();
+            configuration.setName(vnf.getProperties().getConfigurations().getName());
+
+            Set<ConfigurationParameter> configurationParameters = new HashSet<>();
+
+            for(HashMap<String, String> pair : vnf.getProperties().getConfigurations().getConfigurationParameters()){
+
+                ConfigurationParameter configurationParameter = new ConfigurationParameter();
+                configurationParameter.setConfKey((String) pair.keySet().toArray()[0]);
+                configurationParameter.setValue((String) pair.values().toArray()[0]);
+                configurationParameters.add(configurationParameter);
+            }
+
+            configuration.setConfigurationParameters(configurationParameters);
+            vnfd.setConfigurations(configuration);
+        }
+
         return vnfd;
     }
 
@@ -178,10 +193,32 @@ public class TOSCAParser {
 
         vnfd.setLifecycle_event(vnfdTemplate.getInterfaces().getOpLifecycle());
 
+        //ADD CONFIGURATIONS
+        if( vnfdTemplate.getConfigurations() != null ){
+
+            VNFConfigurations configurations = new VNFConfigurations(vnfdTemplate.getConfigurations());
+
+            Configuration configuration = new Configuration();
+            configuration.setName(configurations.getName());
+
+            Set<ConfigurationParameter> configurationParameters = new HashSet<>();
+
+            for(HashMap<String, String> pair : configurations.getConfigurationParameters()){
+
+                ConfigurationParameter configurationParameter = new ConfigurationParameter();
+                configurationParameter.setConfKey((String) pair.keySet().toArray()[0]);
+                configurationParameter.setValue((String) pair.values().toArray()[0]);
+                configurationParameters.add(configurationParameter);
+            }
+
+            configuration.setConfigurationParameters(configurationParameters);
+            vnfd.setConfigurations(configuration);
+        }
+
         return vnfd;
     }
 
-    //TODO: Parse NSDTemplate and return NSD instance
+
     public NetworkServiceDescriptor parseNSDTemplate(NSDTemplate nsdTemplate){
 
         NetworkServiceDescriptor nsd = new NetworkServiceDescriptor();
@@ -200,13 +237,14 @@ public class TOSCAParser {
         }
 
         // ADD VLS
+        nsd.setVld(new HashSet<VirtualLinkDescriptor>());
 
-        /*for( VLNodeTemplate vlNode :  nsdTemplate.getTopology_template().getVLNodes()){
+        for( VLNodeTemplate vlNode :  nsdTemplate.getTopology_template().getVLNodes()){
 
-            VirtualLinkDescriptor vl = new VirtualLinkDescriptor();
-            vl.setName(vlNode.getName());
-            nsd.getVld().add(vl);
-        }*/
+            VirtualLinkDescriptor vld = new VirtualLinkDescriptor();
+            vld.setName(vlNode.getName());
+            nsd.getVld().add(vld);
+        }
 
         // ADD DEPENDENCIES
         parseRelationships(nsd, nsdTemplate.getRelationships_template());

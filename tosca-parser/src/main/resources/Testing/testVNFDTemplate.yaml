@@ -6,15 +6,6 @@ metadata:
   vendor:  Acme
   version: 1.0
 
-node_types:
-  vRouterVNF:
-  derived_from: tosca.nodes.nfv.VNF
-  capabilities:
-  forwarder_ingres:
-  type: tosca.capabilities.nfv.Forwarder
-  forwarder_egres:
-  type: tosca.capabilities.nfv.Forwarder
-
 vnfPackageLocation: https://gitlab.fokus.fraunhofer.de/openbaton/scripts-test-public.git
 deploymentFlavour:
   # - flavour_key: m1.small Redundant ?

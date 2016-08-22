@@ -16,6 +16,12 @@ deploymentFlavour:
   # - flavour_key: m1.small Redundant ?
   - m1.small
 
+configurations:
+  name: server-configurations
+  configurationParameters:
+    - key: value
+    - key2: value2
+
 vnfPackageLocation: https://github.com/openbaton/vnf-scripts.git
 
 topology_template:

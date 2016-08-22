@@ -6,8 +6,6 @@ metadata:
   vendor: Fokus
   version: 0.1
 
-#TODO: ADD iperf-server
-
 topology_template:
 
   node_templates:
@@ -75,6 +73,8 @@ topology_template:
 
     CP1:
       type: tosca.nodes.nfv.CP
+      properties:
+        floatingIP: random
       requirements:
         virtualBinding: VDU1
         virtualLink: private

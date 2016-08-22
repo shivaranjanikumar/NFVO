@@ -21,6 +21,7 @@ public class VNFDTemplate {
     private String vnfPackageLocation = null;
     private ArrayList<String> deploymentFlavour = null;
     private VNFInterfaces interfaces = null;
+    private Object configurations = null;
 
 
     public String getTosca_definitions_version() {
@@ -104,6 +105,14 @@ public class VNFDTemplate {
         this.interfaces = vnfInterfaces;
     }
 
+    public Object getConfigurations() {
+        return configurations;
+    }
+
+    public void setConfigurations(Object configurations) {
+        this.configurations = configurations;
+    }
+
     public String toString(){
 
         return "tosca_definitions_version" + tosca_definitions_version + "\n" +
@@ -114,6 +123,7 @@ public class VNFDTemplate {
                 "vnf_interfaces: " + interfaces + "\n" +
                 "vnfPackageLoc: " + vnfPackageLocation + "\n";
     }
+
 
 
 }

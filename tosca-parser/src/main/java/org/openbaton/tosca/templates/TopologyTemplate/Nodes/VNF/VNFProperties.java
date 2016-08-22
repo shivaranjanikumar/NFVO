@@ -17,7 +17,7 @@ public class VNFProperties {
     private double version;
     private String vnfPackageLocation;
     private ArrayList<String> deploymentFlavour;
-    private Object Configurations = null;
+    private VNFConfigurations configurations = null;
 
     public VNFProperties(Object properties){
 
@@ -41,6 +41,10 @@ public class VNFProperties {
 
         if(propertiesMap.containsKey("ID")){
             ID = (String) propertiesMap.get("ID");
+        }
+
+        if( propertiesMap.containsKey("configurations")){
+            configurations = new VNFConfigurations(propertiesMap.get("configurations"));
         }
     }
 
@@ -100,12 +104,12 @@ public class VNFProperties {
         return vnfdf;
     }
 
-    public Object getConfigurations() {
-        return Configurations;
+    public VNFConfigurations getConfigurations() {
+        return configurations;
     }
 
-    public void setConfigurations(Object configurations) {
-        Configurations = configurations;
+    public void setConfigurations(VNFConfigurations configurations) {
+        this.configurations = configurations;
     }
 
     @Override
