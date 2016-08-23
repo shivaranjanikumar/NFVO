@@ -15,7 +15,6 @@ public class VNFNodeTemplate {
     private VNFInterfaces interfaces = null;
     private VNFRequirements requirements = null;
 
-
     public VNFNodeTemplate(NodeTemplate nodeTemplate, String nodeName){
 
         this.name = nodeName;

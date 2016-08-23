@@ -16,6 +16,7 @@ topology_template:
           id:
           vendor: Fokus
           version: 0.1
+          endpoint: dummy
           configurations:
             name: server-configurations
             configurationParameters:
@@ -23,13 +24,14 @@ topology_template:
               - key2: value2
           vnfPackageLocation: https://gitlab.fokus.fraunhofer.de/openbaton/scripts-test-public.git
           deployment_flavour:
-            - m1.small
+            - flavour_key: m1.small
+            - flavour_key: m1.large
         requirements:
           - virtualLink: private
           - vdu: VDU2
         interfaces:
           lifecycle: # lifecycle
-            create:
+            instantiate:
               - install.sh
 
     iperf-client:
@@ -40,13 +42,14 @@ topology_template:
         version: 0.1
         vnfPackageLocation: https://gitlab.fokus.fraunhofer.de/openbaton/scripts-test-public.git
         deploymentFlavour:
-          - m1.small
+          - flavour_key: m1.small
+        endpoint: dummy
       requirements:
          - virtualLink: private
          - vdu: VDU1
       interfaces:
           lifecycle: # lifecycle
-            INSTANCIATE:
+            INSTANTIATE:
               - install.sh
             CONFIGURE:
               - server_configure_only.sh

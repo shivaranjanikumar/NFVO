@@ -107,6 +107,7 @@ public class TOSCAParser {
 
         vnfd.setDeployment_flavour(vnf.getProperties().getDeploymentFlavourConverted());
         vnfd.setVnfPackageLocation(vnf.getProperties().getVnfPackageLocation());
+        vnfd.setEndpoint(vnf.getProperties().getEndpoint());
 
         ArrayList<String> vduList = vnf.getRequirements().getVDUS();
 
@@ -169,8 +170,9 @@ public class TOSCAParser {
         vnfd.setVendor(vnfdTemplate.getMetadata().getVendor());
         vnfd.setVersion(vnfdTemplate.getMetadata().getVersion());
 
-        vnfd.setDeployment_flavour(vnfdTemplate.getDeploymentFlavourConverted());
-        vnfd.setVnfPackageLocation(vnfdTemplate.getVnfPackageLocation());
+        vnfd.setDeployment_flavour(vnfdTemplate.getInputs().getDeploymentFlavourConverted());
+        vnfd.setVnfPackageLocation(vnfdTemplate.getInputs().getVnfPackageLocation());
+        vnfd.setEndpoint(vnfdTemplate.getInputs().getEndpoint());
 
         // ADD VDUs
         Set<VirtualDeploymentUnit> vdus = new HashSet<>();
@@ -191,12 +193,12 @@ public class TOSCAParser {
 
         vnfd.setVirtual_link(vls);
 
-        vnfd.setLifecycle_event(vnfdTemplate.getInterfaces().getOpLifecycle());
+        vnfd.setLifecycle_event(vnfdTemplate.getInputs().getInterfaces().getOpLifecycle());
 
         //ADD CONFIGURATIONS
-        if( vnfdTemplate.getConfigurations() != null ){
+        if( vnfdTemplate.getInputs().getConfigurations() != null ){
 
-            VNFConfigurations configurations = new VNFConfigurations(vnfdTemplate.getConfigurations());
+            VNFConfigurations configurations = new VNFConfigurations(vnfdTemplate.getInputs().getConfigurations());
 
             Configuration configuration = new Configuration();
             configuration.setName(configurations.getName());

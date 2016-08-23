@@ -6,23 +6,25 @@ metadata:
   vendor: Fokus
   version: 0.1
 
-interfaces:
-  lifecycle:
-    INSTANTIATE :
-      - install.sh
-      - start-srv.sh
+inputs:
+  interfaces:
+    lifecycle:
+      INSTANTIATE :
+        - install.sh
+        - start-srv.sh
 
-deploymentFlavour:
-  # - flavour_key: m1.small Redundant ?
-  - m1.small
+  deploymentFlavour:
+    - flavour_key: m1.small
 
-configurations:
-  name: server-configurations
-  configurationParameters:
-    - key: value
-    - key2: value2
+  configurations:
+    name: server-configurations
+    configurationParameters:
+      - key: value
+      - key2: value2
 
-vnfPackageLocation: https://github.com/openbaton/vnf-scripts.git
+  vnfPackageLocation: https://github.com/openbaton/vnf-scripts.git
+
+  endpoint: dummy
 
 topology_template:
 

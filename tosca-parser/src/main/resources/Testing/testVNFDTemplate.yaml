@@ -6,19 +6,19 @@ metadata:
   vendor:  Acme
   version: 1.0
 
-vnfPackageLocation: https://gitlab.fokus.fraunhofer.de/openbaton/scripts-test-public.git
-deploymentFlavour:
-  # - flavour_key: m1.small Redundant ?
-  - m1.small
+inputs:
+  vnfPackageLocation: https://gitlab.fokus.fraunhofer.de/openbaton/scripts-test-public.git
+  deploymentFlavour:
+    - flavour_key: m1.small
 
-interfaces:
-    lifecycle: # lifecycle
-        INSTANTIATE:
-          - install.sh
-        CONFIGURE:
-          - server_configure_only.sh
-        START:
-           - iperf_client_start.sh
+  interfaces:
+      lifecycle: # lifecycle
+          INSTANTIATE:
+            - install.sh
+          CONFIGURE:
+            - server_configure_only.sh
+          START:
+             - iperf_client_start.sh
 
 topology_template:
    inputs:

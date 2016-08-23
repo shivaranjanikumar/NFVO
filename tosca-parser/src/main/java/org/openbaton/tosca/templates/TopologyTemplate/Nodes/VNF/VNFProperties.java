@@ -2,10 +2,7 @@ package org.openbaton.tosca.templates.TopologyTemplate.Nodes.VNF;
 
 import org.openbaton.catalogue.mano.common.VNFDeploymentFlavour;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by rvl on 19.08.16.
@@ -16,8 +13,9 @@ public class VNFProperties {
     private String ID;
     private double version;
     private String vnfPackageLocation;
-    private ArrayList<String> deploymentFlavour;
+    private ArrayList<HashMap<String, String>> deploymentFlavour;
     private VNFConfigurations configurations = null;
+    private String endpoint = null;
 
     public VNFProperties(Object properties){
 
@@ -36,7 +34,7 @@ public class VNFProperties {
         }
 
         if(propertiesMap.containsKey("deploymentFlavour")){
-            deploymentFlavour = (ArrayList<String>) propertiesMap.get("deploymentFlavour");
+            deploymentFlavour = (ArrayList<HashMap<String, String>>) propertiesMap.get("deploymentFlavour");
         }
 
         if(propertiesMap.containsKey("ID")){
@@ -45,6 +43,10 @@ public class VNFProperties {
 
         if( propertiesMap.containsKey("configurations")){
             configurations = new VNFConfigurations(propertiesMap.get("configurations"));
+        }
+
+        if( propertiesMap.containsKey("endpoint")){
+            endpoint = (String) propertiesMap.get("endpoint");
         }
     }
 
@@ -80,11 +82,11 @@ public class VNFProperties {
         this.vnfPackageLocation = vnfPackageLocation;
     }
 
-    public ArrayList<String> getDeploymentFlavour() {
+    public ArrayList<HashMap<String, String>> getDeploymentFlavour() {
         return deploymentFlavour;
     }
 
-    public void setDeploymentFlavour(ArrayList<String> deploymentFlavour) {
+    public void setDeploymentFlavour(ArrayList<HashMap<String, String>> deploymentFlavour) {
         this.deploymentFlavour = deploymentFlavour;
     }
 
@@ -93,11 +95,16 @@ public class VNFProperties {
         Set<VNFDeploymentFlavour> vnfdf = new HashSet<>();
 
         if(deploymentFlavour != null){
-            for(String df : deploymentFlavour){
+            for(HashMap<String, String> df : this.deploymentFlavour){
 
-                VNFDeploymentFlavour new_df = new VNFDeploymentFlavour();
-                new_df.setFlavour_key(df);
-                vnfdf.add(new_df);
+                for( String key : df.keySet()){
+                    if(key.equals("flavour_key")){
+
+                        VNFDeploymentFlavour new_df = new VNFDeploymentFlavour();
+                        new_df.setFlavour_key(df.get("flavour_key"));
+                        vnfdf.add(new_df);
+                    }
+                }
             }
         }
 
@@ -112,6 +119,14 @@ public class VNFProperties {
         this.configurations = configurations;
     }
 
+    public String getEndpoint() {
+        return endpoint;
+    }
+
+    public void setEndpoint(String endpoint) {
+        this.endpoint = endpoint;
+    }
+
     @Override
     public String toString(){
 
@@ -122,4 +137,5 @@ public class VNFProperties {
                 "package : " + vnfPackageLocation + "\n" +
                 "depl flavour : " + deploymentFlavour + "\n";
     }
+
 }

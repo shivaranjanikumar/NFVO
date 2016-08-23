@@ -1,12 +1,6 @@
 package org.openbaton.tosca.templates;
 
-import org.openbaton.catalogue.mano.common.VNFDeploymentFlavour;
-import org.openbaton.tosca.templates.TopologyTemplate.Nodes.VNF.VNFInterfaces;
 import org.openbaton.tosca.templates.TopologyTemplate.TopologyTemplate;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * Created by rvl on 17.08.16.
@@ -18,10 +12,7 @@ public class VNFDTemplate {
     private TOSCAMetadata metadata;
     private Object node_types = null;
     private TopologyTemplate topology_template;
-    private String vnfPackageLocation = null;
-    private ArrayList<String> deploymentFlavour = null;
-    private VNFInterfaces interfaces = null;
-    private Object configurations = null;
+    private VNFDInputsTemplate inputs;
 
 
     public String getTosca_definitions_version() {
@@ -64,55 +55,15 @@ public class VNFDTemplate {
         return this.topology_template;
     }
 
-
-    public String getVnfPackageLocation() {
-        return vnfPackageLocation;
+    public void setInputs(VNFDInputsTemplate inputs) {
+        this.inputs = inputs;
     }
 
-    public void setVnfPackageLocation(String vnfPackageLocation) {
-        this.vnfPackageLocation = vnfPackageLocation;
+    public VNFDInputsTemplate getInputs(){
+        return inputs;
     }
 
-    public ArrayList<String> getDeploymentFlavour() {
-        return deploymentFlavour;
-    }
-
-    public void setDeploymentFlavour(ArrayList<String> deploymentFlavour) {
-        this.deploymentFlavour = deploymentFlavour;
-    }
-
-    public Set<VNFDeploymentFlavour> getDeploymentFlavourConverted(){
-
-        Set<VNFDeploymentFlavour> vnfdf = new HashSet<>();
-
-        if(deploymentFlavour != null){
-            for(String df : deploymentFlavour){
-
-                VNFDeploymentFlavour new_df = new VNFDeploymentFlavour();
-                new_df.setFlavour_key(df);
-                vnfdf.add(new_df);
-            }
-        }
-
-        return vnfdf;
-    }
-
-    public VNFInterfaces getInterfaces() {
-        return interfaces;
-    }
-
-    public void setInterfaces(VNFInterfaces vnfInterfaces) {
-        this.interfaces = vnfInterfaces;
-    }
-
-    public Object getConfigurations() {
-        return configurations;
-    }
-
-    public void setConfigurations(Object configurations) {
-        this.configurations = configurations;
-    }
-
+    @Override
     public String toString(){
 
         return "tosca_definitions_version" + tosca_definitions_version + "\n" +
@@ -120,10 +71,7 @@ public class VNFDTemplate {
                 "Metadata: " + metadata + "\n" +
                 "node_types: " + node_types + "\n" +
                 "topology_template: " + topology_template + "\n" +
-                "vnf_interfaces: " + interfaces + "\n" +
-                "vnfPackageLoc: " + vnfPackageLocation + "\n";
+                "inputs_template: " + inputs;
     }
-
-
 
 }
